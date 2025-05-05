@@ -2,15 +2,19 @@
 #include "MOTORDRiVE.h"
 
 void MOTOR::setMotor() {
-	if (m_speed >= 0) {
+	if (m_speed > 0) {
 		dutyCycle = m_speed * 21;
 		_HAL_TIM_SET_COMPARE(M_TIM1, m_channel1, dutyCycle);
 		_HAL_TIM_SET_COMPARE(M_TIM2, m_channel2, 0);
 	}
-	else {
-		dutyCycle = m_speed * 21;
+	else if(m_speed < 0) {
+		dutyCycle = abs(m_speed) * 21;
 		_HAL_TIM_SET_COMPARE(M_TIM1, m_channel1, 0);
 		_HAL_TIM_SET_COMPARE(M_TIM2, m_channel2, dutyCycle);
+	}
+	else {
+		_HAL_TIM_SET_COMPARE(M_TIM1, m_channel1, 0);
+		_HAL_TIM_SET_COMPARE(M_TIM2, m_channel2, 0);
 	}
 }
 
