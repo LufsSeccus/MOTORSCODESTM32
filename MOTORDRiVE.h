@@ -19,14 +19,15 @@ private:
 	uint32_t m_speed; // m_speed is a value ranging from -1000-1000
 	TIM_HandleTypeDef* M_TIM1;
 	TIM_HandleTypeDef* M_TIM2;
-	unint32_t m_channel1
-	unint32_t m_channel2
+	uint32_t m_channel1
+	uint32_t m_channel2
 public:
 	MOTOR(uint16_t PIN_1, uint16_t PIN_2, TIM_HandleTypeDef* TIM1, TIM_HandleTypeDef* TIM2, uint32_t CHANNEL1, uint32_t CHANNEL2)
 	: IN_1{ PIN_1 }, IN_2{ PIN_2] ,  M_TIM1 { TIM1 },  M_TIM2 { TIM2 }, m_channel1 { CHANNEL1}, m_channel2 { CHANNEL2};
 	void setSpeed(uint32_t speed) { m_speed = speed; };
 	void setMotor();
 	void emergencyStop() { setSpeed(0); };
+	void Innit(); 
 }
 
 class PIDController {
