@@ -26,7 +26,7 @@ public:
 	: IN_1{ PIN_1 }, IN_2{ PIN_2] ,  M_TIM1 { TIM1 },  M_TIM2 { TIM2 }, m_channel1 { CHANNEL1}, m_channel2 { CHANNEL2};
 	void setSpeed(int32_t speed) { m_speed = speed; };
 	void setMotor();
-	void emergencyStop() { setSpeed(0); };
+	void emergencyStop() { setSpeed(0); setMotor()};
 	void Innit(); 
 }
 
