@@ -1,0 +1,18 @@
+// Create motors
+MOTOR leftMotor(/* your GPIO and TIM settings here */);
+MOTOR rightMotor(/* your GPIO and TIM settings here */);
+
+// Create PID controllers
+PIDController leftPID(1.0f, 0.5f, 0.1f);  // Example PID gains
+PIDController rightPID(1.0f, 0.5f, 0.1f);
+
+// Movement manager
+Movements mover(&leftMotor, &rightMotor);
+
+// In your main control loop
+float setpoint = 500;  // Target speed
+float leftMeas = getLeftEncoderSpeed();    // Replace with your function
+float rightMeas = getRightEncoderSpeed();  // Replace with your function
+
+// Drive straight using PID
+mover.goStraight(&leftPID, &rightPID, setpoint, leftMeas, rightMeas);
