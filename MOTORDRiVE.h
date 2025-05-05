@@ -30,6 +30,21 @@ public:
 	void Innit(); 
 }
 
+class Movements {
+public:
+    Movements(MOTOR* left, MOTOR* right)
+        : leftMotor(left), rightMotor(right) {}
+
+    void goStraight(uint32_t speed);    // both motors forward
+    void rotateLeft(uint32_t speed);    // left motor reverse, right motor forward
+    void rotateRight(uint32_t speed);   // left motor forward, right motor reverse
+    void stop();                        // stop both motors
+
+private:
+    MOTOR* leftMotor;
+    MOTOR* rightMotor;
+};
+
 class PIDController {
 public:
     PIDController(float kp, float ki, float kd, float dt, float filter_tau)
