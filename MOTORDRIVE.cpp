@@ -18,7 +18,7 @@ void MOTOR::setMotor() {
 	}
 }
 
-void MOTOR::Init() {
+void MOTOR::Innit() {
     // Start PWM on both timers
     HAL_TIM_PWM_Start(M_TIM1, m_channel1);
     HAL_TIM_PWM_Start(M_TIM2, m_channel2);
