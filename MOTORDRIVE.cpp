@@ -24,6 +24,47 @@ void MOTOR::Init() {
     HAL_TIM_PWM_Stop(M_TIM2, m_channel2);
 }
 
+void Movements::goStraight(PIDController* leftPID, PIDController* rightPID,
+                           float setpoint, float leftMeas, float rightMeas) {
+    float leftOutput = leftPID->update(setpoint, leftMeas);
+    float rightOutput = rightPID->update(setpoint, rightMeas);
+
+    // Clamp outputs to safe range (e.g., -1000 to +1000)
+    if (leftOutput > 1000) leftOutput = 1000;
+    if (leftOutput < -1000) leftOutput = -1000;
+    if (rightOutput > 1000) rightOutput = 1000;
+    if (rightOutput < -1000) rightOutput = -1000;
+
+    leftMotor->setSpeed((int32_t)leftOutput);
+    rightMotor->setSpeed((int32_t)rightOutput);
+
+    leftMotor->setMotor();
+    rightMotor->setMotor();
+}
+
+
+void Movements::rotateLeft(uint32_t speed) {
+    leftMotor->setSpeed(-speed);  // reverse
+    rightMotor->setSpeed(speed);  // forward
+    leftMotor->setMotor();
+    rightMotor->setMotor();
+}
+
+void Movements::rotateRight(uint32_t speed) {
+    leftMotor->setSpeed(speed);   // forward
+    rightMotor->setSpeed(-speed); // reverse
+    leftMotor->setMotor();
+    rightMotor->setMotor();
+}
+
+void Movements::stop() {
+    leftMotor->setSpeed(0);
+    rightMotor->setSpeed(0);
+    leftMotor->setMotor();
+    rightMotor->setMotor();
+}
+
+
 float PIDController :: update(float setpoint, float measurement) {
     float error = setpoint - measurement;//measurement is the output from the encoder -> go straight = measurement(speed) of both motors should be the same and so on 
 
