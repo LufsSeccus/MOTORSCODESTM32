@@ -37,8 +37,8 @@ public:
 
     void goStraight(PIDController* leftPID, PIDController* rightPID,
                     float setpoint, float leftMeas, float rightMeas); // both motors forward
-    void rotateLeft(int32_t speed);    // left motor reverse, right motor forward
-    void rotateRight(int32_t speed);   // left motor forward, right motor reverse
+   void rotateLeft(PIDController* leftPID, PIDController* rightPID, float setpoint, float leftMeas, float rightMeas);
+void rotateRight(PIDController* leftPID, PIDController* rightPID, float setpoint, float leftMeas, float rightMeas);
     void stop();                        // stop both motors
 
 private:
