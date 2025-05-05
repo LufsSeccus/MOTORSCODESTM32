@@ -35,7 +35,8 @@ public:
     Movements(MOTOR* left, MOTOR* right)
         : leftMotor(left), rightMotor(right) {}
 
-    void goStraight(int32_t speed);    // both motors forward
+    void goStraight(PIDController* leftPID, PIDController* rightPID,
+                    float setpoint, float leftMeas, float rightMeas); // both motors forward
     void rotateLeft(int32_t speed);    // left motor reverse, right motor forward
     void rotateRight(int32_t speed);   // left motor forward, right motor reverse
     void stop();                        // stop both motors
