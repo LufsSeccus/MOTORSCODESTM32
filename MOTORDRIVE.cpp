@@ -47,19 +47,38 @@ void Movements::goStraight(PIDController* leftPID, PIDController* rightPID,
 }
 
 
-void Movements::rotateLeft(uint32_t speed) {
-    leftMotor->setSpeed(-speed);  // reverse
-    rightMotor->setSpeed(speed);  // forward
+void Movements::rotateLeft(PIDController* leftPID, PIDController* rightPID,
+    float setpoint, float leftMeas, float rightMeas) {
+
+    float leftOutput = leftPID->update(-setpoint, leftMeas);   // Reverse left motor
+    float rightOutput = rightPID->update(setpoint, rightMeas); // Forward right motor
+
+    leftOutput = std::clamp(leftOutput, -1000.0f, 1000.0f);
+    rightOutput = std::clamp(rightOutput, -1000.0f, 1000.0f);
+
+    leftMotor->setSpeed((int32_t)leftOutput);
+    rightMotor->setSpeed((int32_t)rightOutput);
+
     leftMotor->setMotor();
     rightMotor->setMotor();
 }
 
-void Movements::rotateRight(uint32_t speed) {
-    leftMotor->setSpeed(speed);   // forward
-    rightMotor->setSpeed(-speed); // reverse
+void Movements::rotateRight(PIDController* leftPID, PIDController* rightPID,
+    float setpoint, float leftMeas, float rightMeas) {
+
+    float leftOutput = leftPID->update(setpoint, leftMeas);    // Forward left motor
+    float rightOutput = rightPID->update(-setpoint, rightMeas); // Reverse right motor
+
+    leftOutput = std::clamp(leftOutput, -1000.0f, 1000.0f);
+    rightOutput = std::clamp(rightOutput, -1000.0f, 1000.0f);
+
+    leftMotor->setSpeed((int32_t)leftOutput);
+    rightMotor->setSpeed((int32_t)rightOutput);
+
     leftMotor->setMotor();
     rightMotor->setMotor();
 }
+
 
 void Movements::stop() {
     leftMotor->setSpeed(0);
@@ -70,8 +89,7 @@ void Movements::stop() {
 
 
 float PIDController :: update(float setpoint, float measurement) {
-    float error = setpoint - measurement;//measurement is the output from the encoder -> go straight = measurement(speed) of both motors should be the same and so on 
-
+    float error = setpoint - measurement;
     // Proportional
     float P = Kp * error;
 
