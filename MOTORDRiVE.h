@@ -72,3 +72,25 @@ private:
     }
     };
 
+class Encoder{
+private:
+    int32_t LeftPosi, RightPosi;
+    int32_t currLeftPosi, currRightPosi, prevLeftPosi, prevRightPosi ; 
+    TIM_HandleTypeDef* M_TIM1;
+	TIM_HandleTypeDef* M_TIM2;
+	uint32_t m_channel1;
+	uint32_t m_channel2;
+    uint32_t prevLeftTime = 0;
+    uint32_t prevRightTime = 0;
+    uint32_t pulse;
+public:
+    Enconder(TIM_HandleTypeDef* TIM1, TIM_HandleTypeDef* TIM2, uint32_t CHANNEL1, uint32_t CHANNEL2)
+    : currLeftPosi{0}, currRightPosi{0}, prevLeftPosi{0}, prevRightPosi{0},LeftPosi{0}, RightPosi{0},
+    M_TIM1 { TIM1 },  M_TIM2 { TIM2 }, m_channel1 { CHANNEL1}, m_channel2 { CHANNEL2};
+    void Innit();
+    void setPulse(uint32_t E_Pulse) : pulse{E_Pulse};
+    int32_t readLeftEncoderPosi();
+    int32_t readRightEncoderPosi();
+    int32_t readLeftEncoderSpeed();
+    int32_t readRightEncoderSpeed();
+}
