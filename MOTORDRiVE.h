@@ -94,3 +94,15 @@ public:
     int32_t readLeftEncoderSpeed();
     int32_t readRightEncoderSpeed();
 }
+
+class IRSensors{
+private:
+    uint16_t m_GPIO_PIN_x,m_GPIOx;
+    bool IRVal;
+public:
+    IRSensors(uint16_t GPIO_PIN_x, uint16_t GPIOx) : m_GPIO_PIN_x{GPIO_PIN_x},m_GPIOx{GPIOx}{};
+    int32_t readIR(){
+        IRVal = HAL_GPIO_ReadPin(m_GPIOx, m_GPIO_PIN_x);
+        return IRVal;
+    }
+}
