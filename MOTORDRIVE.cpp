@@ -112,3 +112,63 @@ void PIDController :: reset() {
     prev_derivative = 0;
     output = 0;
 }
+
+void Encoder :: Innit(){
+    HAL_TIM_Encoder_Start(M_TIM1, m_channel1);
+    HAL_TIM_Encoder_Start(M_TIM2, m_channel2);
+
+    lastLeftPosi = __HAL_TIM_GET_COUNTER(M_TIM1);
+    lastRightPosi = __HAL_TIM_GET_COUNTER(M_TIM2);
+}
+
+int32_t Encoder :: readLeftEncoderPosi(){
+    currLeftPosi = __HAL_TIM_GET_COUNTER(M_TIM1);
+    int16_t posiIncrease = (int16_t)(currLeftPosi - prevLeftPosi); //deals with over and underflow
+    LeftPosi += posiIncrease; 
+    prevLeftPosi = currLeftPosi;
+    return LeftPosi;
+}
+
+int32_t Encoder :: readRightEncoderPosi(){
+    currRightPosi = __HAL_TIM_GET_COUNTER(M_TIM2);
+    int16_t posiIncrease = (int16_t)(currRightPosi - prevRightPosi);
+    RightPosi += posiIncrease; 
+    prevRightPosi = currRightPosi;
+    return RightPosi;
+}
+
+int32_t Encoder::readLeftEncoderSpeed() {
+    uint32_t now = HAL_GetTick();  // time in milliseconds
+    currLeftPosi = __HAL_TIM_GET_COUNTER(M_TIM1);
+
+    int16_t deltaPos = (int16_t)(currLeftPosi - prevLeftPosi);
+    uint32_t deltaTime = now - prevLeftTime;
+
+    prevLeftPosi = currLeftPosi;
+    prevLeftTime = now;
+
+    if (deltaTime == 0) return 0; // avoid division by zero
+
+    float speed = (float)deltaPos / (float)deltaTime; // counts per ms
+    speed *= pulse; // convert to counts per second
+
+    return (int32_t)speed;
+}
+
+int32_t Encoder::readRightEncoderSpeed() {
+    uint32_t now = HAL_GetTick();
+    currRightPosi = __HAL_TIM_GET_COUNTER(M_TIM2);
+
+    int16_t deltaPos = (int16_t)(currRightPosi - prevRightPosi);
+    uint32_t deltaTime = now - prevRightTime;
+
+    prevRightPosi = currRightPosi;
+    prevRightTime = now;
+
+    if (deltaTime == 0) return 0;
+
+    float speed = (float)deltaPos / (float)deltaTime; // counts per ms
+    speed *= pulse;
+
+    return (int32_t)speed;
+}
