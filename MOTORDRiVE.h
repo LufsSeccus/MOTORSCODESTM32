@@ -102,6 +102,8 @@ private:
     uint32_t WallVal; 
 public:
     IRSensors( ADC_HandleTypeDef *hadc) : m_hadc{hadc};
+	void Innit(){HAL_ADC_Start(&m_hadc);};
+
     uint32_t IRCalip(){
         WallVal = HAL_ADC_GetValue(&m_hadc);
         return WallVal;
@@ -112,3 +114,4 @@ public:
         else return 0;
     };
 }
+#endif
