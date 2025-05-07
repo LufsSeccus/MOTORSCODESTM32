@@ -97,12 +97,18 @@ public:
 
 class IRSensors{
 private:
-    uint16_t m_GPIO_PIN_x,m_GPIOx;
-    bool IRVal;
+    ADC_HandleTypeDef *m_hadc; //setup adc as continuos conversion 
+    uint32_t IRVal;
+    uint32_t WallVal; 
 public:
-    IRSensors(uint16_t GPIO_PIN_x, uint16_t GPIOx) : m_GPIO_PIN_x{GPIO_PIN_x},m_GPIOx{GPIOx}{};
-    int32_t readIR(){
-        IRVal = HAL_GPIO_ReadPin(m_GPIOx, m_GPIO_PIN_x);
-        return IRVal;
-    }
+    IRSensors( ADC_HandleTypeDef *hadc) : m_hadc{hadc};
+    uint32_t IRCalip(){
+        WallVal = HAL_ADC_GetValue(&m_hadc);
+        return WallVal;
+    };
+    bool readIR(){
+        IRVal = HAL_ADC_GetValue(&m_hadc);
+        if(IRVal > WallVal ) return 1;
+        else return 0;
+    };
 }
