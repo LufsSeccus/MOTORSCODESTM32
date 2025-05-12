@@ -1,5 +1,34 @@
 #include "main.h"
 #include "MOTORDRiVE.h"
+#include "MPU9250-DMP.h"
+
+float getYawAngle(){
+    /*MPU9250_DMP(); // Initialize scale constants
+  if (MPU9250_begin() != INV_SUCCESS)
+     {
+         printf("MPU init failed!\n");
+         while (1);
+     }
+
+     // Set orientation matrix for DMP (identity matrix here, customize if needed)
+     const signed char orientationMatrix[9] = {
+         1, 0, 0,
+         0, 1, 0,
+         0, 0, 1
+     };
+     MPU9250_dmpSetOrientation(orientationMatrix);
+
+     // Enable DMP features
+     MPU9250_dmpBegin(DMP_FEATURE_6X_LP_QUAT | DMP_FEATURE_GYRO_CAL, 10); // 10 Hz update */
+    if (MPU9250_dmpUpdateFifo() == INV_SUCCESS)
+	          {
+	              MPU9250_computeEulerAngles(true); // Calculate angles in degrees
+	              
+                  return yaw_inside;
+	          }
+
+	          HAL_Delay(100); // 10 Hz
+}
 
 void MOTOR::setMotor() {
 	if (m_speed > 0) {
@@ -79,6 +108,61 @@ void Movements::rotateRight(PIDController* leftPID, PIDController* rightPID,
     rightMotor->setMotor();
 }
 
+void Movements::rotateLeft90Deg(PIDController* leftPID, PIDController* rightPID,
+    float setpoint, float leftMeas, float rightMeas){ // has to be called in the while loop
+    static bool initialized = false;
+    static float targetYaw = 0.0f;
+
+    if (!initialized)
+    {
+        float currentYaw = getYawAngle(); // from MPU9250 global
+        targetYaw = currentYaw - 90.0f;
+        if (targetYaw < 0) targetYaw += 360.0f;
+        initialized = true;
+    }
+
+    float error = yaw_inside - targetYaw;
+    if (error < 0) error += 360.0f;
+
+    if (error > 2.0f) // Continue rotating until within 2°
+    {
+        rotateLeft(&leftPID, &rightPID, setpoint, leftMeas, rightMeas);
+    }
+    else
+    {
+        leftMotor->stop();
+        rightMotor->stop();
+        initialized = false; // reset for next time
+    } 
+}
+
+void Movements::rotateRight90Deg(PIDController* leftPID, PIDController* rightPID,
+    float setpoint, float leftMeas, float rightMeas){ // has to be called in the while loop 
+    static bool initialized = false;
+    static float targetYaw = 0.0f;
+
+    if (!initialized)
+    {
+        float currentYaw = getYawAngle();
+        targetYaw = currentYaw + 90.0f;
+        if (targetYaw >= 360.0f) targetYaw -= 360.0f;
+        initialized = true;
+    }
+    
+    float error = yaw_inside - targetYaw;
+    if (error < 0) error += 360.0f;
+
+    if (error > 2.0f) // Continue rotating until within 2°
+    {
+        rotateRight(&leftPID, &rightPID, setpoint, leftMeas, rightMeas);
+    }
+    else
+    {
+        leftMotor->stop();
+        rightMotor->stop();
+        initialized = false; // reset for next time
+    } 
+    }
 
 void Movements::stop() {
     leftMotor->setSpeed(0);
@@ -171,4 +255,8 @@ int32_t Encoder::readRightEncoderSpeed() {
     speed *= pulse;
 
     return (int32_t)speed;
+}
+
+
+
 }

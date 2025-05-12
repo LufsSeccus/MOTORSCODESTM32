@@ -4,6 +4,7 @@
 /*  Set up the PWM timers as per instructions, prescaler = 3, period = 999 -> f = 21000Hz */
 
 #include"main.h"
+#include "MPU9250-DMP.h"
 
 #define CH1 TIM_CHANNEL_1
 #define CH2 TIM_CHANNEL_2
@@ -11,6 +12,8 @@
 #define CH4 TIM_CHANNEL_4
 
 uint 32_t dutyCycle;
+
+float getYawAngle(); // set MPU_9250 as per instructions and get the results through this function
 
 class MOTOR {
 private: 
@@ -37,8 +40,10 @@ public:
 
     void goStraight(PIDController* leftPID, PIDController* rightPID,
                     float setpoint, float leftMeas, float rightMeas); // both motors forward
-   void rotateLeft(PIDController* leftPID, PIDController* rightPID, float setpoint, float leftMeas, float rightMeas);
-void rotateRight(PIDController* leftPID, PIDController* rightPID, float setpoint, float leftMeas, float rightMeas);
+    void rotateLeft(PIDController* leftPID, PIDController* rightPID, float setpoint, float leftMeas, float rightMeas);
+    void rotateRight(PIDController* leftPID, PIDController* rightPID, float setpoint, float leftMeas, float rightMeas);
+    void rotateRight90Deg(PIDController* leftPID, PIDController* rightPID, float setpoint, float leftMeas, float rightMeas);
+    void rotateLeft90Deg(PIDController* leftPID, PIDController* rightPID, float setpoint, float leftMeas, float rightMeas);
     void stop();                        // stop both motors
 
 private:
@@ -114,4 +119,6 @@ public:
         else return 0;
     };
 }
+
+
 #endif
