@@ -121,5 +121,7 @@ public:
 	
 
 uint8_t All_IR_Val(IRSensors* IRMostLeft,IRSensors* IRMiddleLeft, IRSensors* IRMiddleRight, IRSensors* IRMostRight);
+
+void MCM_Wall_Following_In_A_StraigtLine(uint8_t All_IR_VAL, Movements* Ctrl);
 }
 #endif
