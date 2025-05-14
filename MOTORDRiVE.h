@@ -118,8 +118,8 @@ public:
         if(IRVal > WallVal ) return 1;
         else return 0;
     };
-	uint8_t All_IR_Val(IRSensors* IRMostLeft,IRSensors* IRMiddleLeft, IRSensors* IRMiddleRight, IRSensors* IRMostRight);
+	
+
+uint8_t All_IR_Val(IRSensors* IRMostLeft,IRSensors* IRMiddleLeft, IRSensors* IRMiddleRight, IRSensors* IRMostRight);
 }
-
-
 #endif
