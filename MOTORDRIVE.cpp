@@ -108,7 +108,7 @@ void Movements::rotateRight(PIDController* leftPID, PIDController* rightPID,
     rightMotor->setMotor();
 }
 
-void Movements::rotateLeft90Deg(PIDController* leftPID, PIDController* rightPID,
+bool Movements::rotateLeft90Deg(PIDController* leftPID, PIDController* rightPID,
     float setpoint, float leftMeas, float rightMeas){ // has to be called in the while loop
     static bool initialized = false;
     static float targetYaw = 0.0f;
@@ -127,16 +127,18 @@ void Movements::rotateLeft90Deg(PIDController* leftPID, PIDController* rightPID,
     if (error > 2.0f) // Continue rotating until within 2°
     {
         rotateLeft(&leftPID, &rightPID, setpoint, leftMeas, rightMeas);
+	return 0;
     }
     else
     {
         leftMotor->stop();
         rightMotor->stop();
         initialized = false; // reset for next time
+	return 1;
     } 
 }
 
-void Movements::rotateRight90Deg(PIDController* leftPID, PIDController* rightPID,
+bool Movements::rotateRight90Deg(PIDController* leftPID, PIDController* rightPID,
     float setpoint, float leftMeas, float rightMeas){ // has to be called in the while loop 
     static bool initialized = false;
     static float targetYaw = 0.0f;
@@ -155,12 +157,14 @@ void Movements::rotateRight90Deg(PIDController* leftPID, PIDController* rightPID
     if (error > 2.0f) // Continue rotating until within 2°
     {
         rotateRight(&leftPID, &rightPID, setpoint, leftMeas, rightMeas);
+	    return 0;
     }
     else
     {
         leftMotor->stop();
         rightMotor->stop();
         initialized = false; // reset for next time
+	    return 1;
     } 
     }
 
