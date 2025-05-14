@@ -1,18 +1,93 @@
-// Create motors
-MOTOR leftMotor(/* your GPIO and TIM settings here */);
-MOTOR rightMotor(/* your GPIO and TIM settings here */);
+#include "main.h"
+#include "MOTORDRiVE.h"
 
-// Create PID controllers
-PIDController leftPID(1.0f, 0.5f, 0.1f);  // Example PID gains
-PIDController rightPID(1.0f, 0.5f, 0.1f);
+extern TIM_HandleTypeDef htim1;
+extern TIM_HandleTypeDef htim2;
+extern TIM_HandleTypeDef htim3;
+extern TIM_HandleTypeDef htim4;
 
-// Movement manager
-Movements mover(&leftMotor, &rightMotor);
+enum BotState {
+    FOLLOW_WALL,
+    TURN_LEFT,
+    FOLLOW_WALL_AGAIN,
+    TURN_RIGHT,
+    FINISHED
+};
 
-// In your main control loop
-float setpoint = 500;  // Target speed
-float leftMeas = getLeftEncoderSpeed();    // Replace with your function
-float rightMeas = getRightEncoderSpeed();  // Replace with your function
+int main(void)
+{
+    HAL_Init();
+    SystemClock_Config();
 
-// Drive straight using PID
-mover.goStraight(&leftPID, &rightPID, setpoint, leftMeas, rightMeas);
+    // Initialize motors
+    MOTOR leftMotor(GPIO_PIN_0, GPIO_PIN_1, &htim1, &htim3, CH1, CH1);
+    MOTOR rightMotor(GPIO_PIN_2, GPIO_PIN_3, &htim2, &htim4, CH2, CH2);
+    leftMotor.Innit();
+    rightMotor.Innit();
+
+    // PID setup
+    PIDController leftPID(1.0f, 0.5f, 0.1f, 0.01f, 0.02f);
+    PIDController rightPID(1.0f, 0.5f, 0.1f, 0.01f, 0.02f);
+
+    // Movement control
+    Movements movement(&leftMotor, &rightMotor);
+
+    // Encoder
+    Encoder encoder(&htim3, &htim4, CH1, CH2);
+    encoder.Innit();
+    encoder.setPulse(500); // Set your encoder's pulse/rev
+
+   BotState state = FOLLOW_WALL;
+
+while (1)
+{
+    uint8_t ir_val = All_IR_Val(&IR1, &IR2, &IR3, &IR4);
+    int32_t leftSpeed = encoder.readLeftEncoderSpeed();
+    int32_t rightSpeed = encoder.readRightEncoderSpeed();
+
+    switch (state)
+    {
+        case FOLLOW_WALL:
+            if (ir_val == 0b1111) {
+                movement.stop();
+                HAL_Delay(500);
+                state = TURN_LEFT;
+            } else {
+                MCM_Wall_Following_In_A_StraigtLine(ir_val, &movement);
+            }
+            break;
+
+        case TURN_LEFT:
+            movement.rotateLeft90Deg(&leftPID, &rightPID, 300, leftSpeed, rightSpeed);
+            if (/* check that turn is finished inside your function */) {
+                state = FOLLOW_WALL_AGAIN;
+            }
+            break;
+
+        case FOLLOW_WALL_AGAIN:
+            if (ir_val == 0b1111) {
+                movement.stop();
+                HAL_Delay(500);
+                state = TURN_RIGHT;
+            } else {
+                MCM_Wall_Following_In_A_StraigtLine(ir_val, &movement);
+            }
+            break;
+
+        case TURN_RIGHT:
+            movement.rotateRight90Deg(&leftPID, &rightPID, 300, leftSpeed, rightSpeed);
+            if (/* check that turn is finished inside your function */) {
+                state = FINISHED;
+            }
+            break;
+
+        case FINISHED:
+            movement.stop();
+            while (1); // stay stopped
+            break;
+    }
+
+    HAL_Delay(10);
+}
+
+}
