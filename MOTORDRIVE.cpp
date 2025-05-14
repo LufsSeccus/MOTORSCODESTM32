@@ -289,13 +289,14 @@ void MCM_Wall_Following_In_A_StraigtLine(uint8_t All_IR_VAL, Movements* Ctrl){ /
         Ctrl->rotateLeft(&leftPID, &rightPID,setpoint,leftMeas,rightMeas);
         break;
 
-    case 0b1100: //titlting a bit too much to the left 
-        Ctrl->rotateLeftt(&leftPID, &rightPID,2*setpoint,leftMeas,rightMeas);
+    case 0b0011: //titlting a bit too much to the right 
+        Ctrl->rotateLeft(&leftPID, &rightPID,2*setpoint,leftMeas,rightMeas);
         break;
 
     case 0b1111: //wall is infront of you 
         Ctrl->stop();
         break;
     }
+}
 
 }
