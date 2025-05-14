@@ -257,6 +257,18 @@ int32_t Encoder::readRightEncoderSpeed() {
     return (int32_t)speed;
 }
 
+uint8_t All_IR_Val(IRSensors* IRMostLeft, IRSensors* IRMiddleLeft, IRSensors* IRMiddleRight, IRSensors* IRMostRight) {
+    uint8_t all_ir = 0;
+
+    // Left to right: ML | MLft | MRgt | MR
+    all_ir |= (IRMostLeft->readIR()     << 3); // Bit 3
+    all_ir |= (IRMiddleLeft->readIR()   << 2); // Bit 2
+    all_ir |= (IRMiddleRight->readIR()  << 1); // Bit 1
+    all_ir |= (IRMostRight->readIR()    << 0); // Bit 0
+
+    return all_ir; 
+}
+}
 
 
 }
