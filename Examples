@@ -58,8 +58,8 @@ while (1)
             break;
 
         case TURN_LEFT:
-            movement.rotateLeft90Deg(&leftPID, &rightPID, 300, leftSpeed, rightSpeed);
-            if (/* check that turn is finished inside your function */) {
+            bool flag = movement.rotateLeft90Deg(&leftPID, &rightPID, 300, leftSpeed, rightSpeed);
+            if (flag) {
                 state = FOLLOW_WALL_AGAIN;
             }
             break;
@@ -75,8 +75,8 @@ while (1)
             break;
 
         case TURN_RIGHT:
-            movement.rotateRight90Deg(&leftPID, &rightPID, 300, leftSpeed, rightSpeed);
-            if (/* check that turn is finished inside your function */) {
+            bool flag = movement.rotateRight90Deg(&leftPID, &rightPID, 300, leftSpeed, rightSpeed);
+            if (flag) {
                 state = FINISHED;
             }
             break;
