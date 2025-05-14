@@ -42,8 +42,8 @@ public:
                     float setpoint, float leftMeas, float rightMeas); // both motors forward
     void rotateLeft(PIDController* leftPID, PIDController* rightPID, float setpoint, float leftMeas, float rightMeas);
     void rotateRight(PIDController* leftPID, PIDController* rightPID, float setpoint, float leftMeas, float rightMeas);
-    void rotateRight90Deg(PIDController* leftPID, PIDController* rightPID, float setpoint, float leftMeas, float rightMeas);
-    void rotateLeft90Deg(PIDController* leftPID, PIDController* rightPID, float setpoint, float leftMeas, float rightMeas);
+    bool rotateRight90Deg(PIDController* leftPID, PIDController* rightPID, float setpoint, float leftMeas, float rightMeas);
+    bool rotateLeft90Deg(PIDController* leftPID, PIDController* rightPID, float setpoint, float leftMeas, float rightMeas);
     void stop();                        // stop both motors
 
 private:
