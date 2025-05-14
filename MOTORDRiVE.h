@@ -106,18 +106,19 @@ private:
     uint32_t IRVal;
     uint32_t WallVal; 
 public:
-    IRSensors( ADC_HandleTypeDef *hadc) : m_hadc{hadc};
+    IRSensors( ADC_HandleTypeDef *hadc) : m_hadc(hadc), IRVal(0), WallVal(0)
 	void Innit(){HAL_ADC_Start(&m_hadc);};
 
     uint32_t IRCalip(){
         WallVal = HAL_ADC_GetValue(&m_hadc);
         return WallVal;
     };
-    bool readIR(){
+    bool readIR(uint32_t WallVal){
         IRVal = HAL_ADC_GetValue(&m_hadc);
         if(IRVal > WallVal ) return 1;
         else return 0;
     };
+	uint32_t All_IR_Val(IRSensors* IRMostLeft,IRSensors* IRMiddleLeft, IRSensors* IRMiddleRight, IRSensors* IRMostRight);
 }
 
 
