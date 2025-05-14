@@ -268,7 +268,7 @@ uint8_t All_IR_Val(IRSensors* IRMostLeft, IRSensors* IRMiddleLeft, IRSensors* IR
 
     return all_ir; 
 }
-}
+
 
 
 }
