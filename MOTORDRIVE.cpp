@@ -269,6 +269,33 @@ uint8_t All_IR_Val(IRSensors* IRMostLeft, IRSensors* IRMiddleLeft, IRSensors* IR
     return all_ir; 
 }
 
+void MCM_Wall_Following_In_A_StraigtLine(uint8_t All_IR_VAL, Movements* Ctrl){ //in the while(1) section
+    switch (ALL_IR_VAl)
+    {
+    case 0b0110:
+        /* code */
+        Ctrl->goStraight(&leftPID, &rightPID,setpoint,leftMeas,rightMeas);
+        break;
 
+    case 0b1110: //titlting a bit to the left 
+        Ctrl->rotateRight(&leftPID, &rightPID,setpoint,leftMeas,rightMeas);
+        break;
+
+    case 0b1100: //titlting a bit too much to the left 
+        Ctrl->rotateRight(&leftPID, &rightPID,2*setpoint,leftMeas,rightMeas);
+        break;
+        
+    case 0b0111: //titlting a bit to the right 
+        Ctrl->rotateLeft(&leftPID, &rightPID,setpoint,leftMeas,rightMeas);
+        break;
+
+    case 0b1100: //titlting a bit too much to the left 
+        Ctrl->rotateLeftt(&leftPID, &rightPID,2*setpoint,leftMeas,rightMeas);
+        break;
+
+    case 0b1111: //wall is infront of you 
+        Ctrl->stop();
+        break;
+    }
 
 }
